@@ -1,5 +1,6 @@
 h1 {
     background-color: aliceblue;
+<<<<<<< HEAD
 }
 .custom-input {
   position: relative;
@@ -43,4 +44,6 @@ h1 {
 .custom-input input.is-invalid ~ .invalid-feedback {
   display: block;
   color: red;
+=======
+>>>>>>> 385995c0ddf5f8509893edfe4383af474a9737c4
 }
