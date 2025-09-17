@@ -1,0 +1,46 @@
+h1 {
+    background-color: aliceblue;
+}
+.custom-input {
+  position: relative;
+  margin-top: 30px;
+}
+
+.custom-input input {
+  border: 2px solid #0d6efd;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.custom-input input:focus {
+  box-shadow: 0 0 8px rgba(13, 110, 253, 0.5);
+  border-color: #0a58ca;
+}
+
+.custom-input label {
+  position: absolute;
+  top: -10px;
+  right: 16px;
+  background: white;
+  padding: 0 5px;
+  font-size: 0.9rem;
+  color: #0d6efd;
+}
+
+.custom-input .valid-feedback,
+.custom-input .invalid-feedback {
+  display: none;
+  font-size: 0.85rem;
+}
+
+.custom-input input.is-valid ~ .valid-feedback {
+  display: block;
+  color: green;
+}
+
+.custom-input input.is-invalid ~ .invalid-feedback {
+  display: block;
+  color: red;
+}
