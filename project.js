@@ -1,69 +1,136 @@
-<<<<<<< HEAD
-const input = document.getElementById('username');
+window.onload = function () {
+  const img = document.querySelector('.zoom-image');
 
-input.addEventListener('input', () => {
-  if (input.value.trim() !== '') {
-    input.classList.add('is-valid');
-    input.classList.remove('is-invalid');
-  } else {
-    input.classList.remove('is-valid');
-    input.classList.add('is-invalid');
+  if (!img) {
+    console.log("תמונה לא נמצאה");
+    return;
+  }
+
+  // זום אין
+  setTimeout(() => {
+    img.style.transform = 'translate(-50%, -50%) scale(2.5)';
+  }, 500);
+
+  // זום אאוט
+  setTimeout(() => {
+    img.style.transform = 'translate(-50%, -50%) scale(1)';
+  }, 5000);
+};
+const image = document.querySelector('.zoom-image');
+const btn = document.getElementById('toggle-spin');
+
+
+
+
+window.addEventListener('DOMContentLoaded', () => {
+  const sky = document.getElementById('sky');
+  const cloudCount = 15;
+
+  for (let i = 0; i < cloudCount; i++) {
+    const cloud = document.createElement('div');
+    cloud.classList.add('cloud');
+
+    // מיקום אקראי
+    const top = Math.random() * window.innerHeight;
+    const left = Math.random() * window.innerWidth;
+
+    // גודל, מהירות, דיליי
+    const scale = 0.5 + Math.random(); // 0.5 עד 1.5
+    const duration = 40 + Math.random() * 60; // 40 עד 100 שניות
+    const delay = Math.random() * 10; // דיליי אקראי
+
+    cloud.style.top = `${top}px`;
+    cloud.style.left = `${left}px`; // מיקום התחלה רנדומלי
+    cloud.style.transform = `scale(${scale})`;
+    cloud.style.animationDuration = `${duration}s`;
+    cloud.style.animationDelay = `${delay}s`;
+
+    sky.appendChild(cloud);
   }
 });
-=======
 
-$('#address-form').on('submit', function(e){
-    e.preventDefault();
-    const address = $('#address').val().trim();
-    if(!address) return alert("אנא הכנס כתובת");
+// בדיקת שם משתמש בשדה קלט
+const input = document.getElementById('username');
+input.addEventListener('input', () => {
+  const trimmed = input.value.trim();
+  input.classList.toggle('is-valid', trimmed !== '');
+  input.classList.toggle('is-invalid', trimmed === '');
+});
 
-    // 1) Geocoding עם Nominatim (OpenStreetMap חינמי)
-    const geoUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
+// שליחת טופס כתובת
+$('#address-form').on('submit', function (e) {
+  e.preventDefault();
 
-    $.getJSON(geoUrl, function(data){
-        if(!data || data.length === 0){
-            alert("לא נמצא מיקום עבור הכתובת");
-            return;
-        }
+  const address = $('#username').val().trim();
+  if (!address) {
+    alert("אנא הכנס כתובת");
+    return;
+  }
 
-        const lat = parseFloat(data[0].lat);
-        const lon = parseFloat(data[0].lon);
+  const geoUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
 
-        console.log("קואורדינטות:", lat, lon);
+  $.getJSON(geoUrl)
+    .done(function (data) {
+      if (!data || data.length === 0) {
+        alert("לא נמצא מיקום עבור הכתובת");
+        return;
+      }
 
-        // 2) מפה עם Leaflet
-        if(window.map) {
-            window.map.remove();
-        }
-        window.map = L.map('map').setView([lat, lon], 16);
+      const lat = parseFloat(data[0].lat);
+      const lon = parseFloat(data[0].lon);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(window.map);
+      // מפת OSM
+      if (window.map) window.map.remove();
+      window.map = L.map('map').setView([lat, lon], 16);
 
-        L.marker([lat, lon]).addTo(window.map)
-          .bindPopup(`<b>${address}</b>`).openPopup();
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(window.map);
 
-        // 3) חיפוש תמונת רחוב מ-Mapillary (API חינמי, ללא הרשמה)
-        const mapillaryUrl = `https://graph.mapillary.com/images?fields=id,thumb_1024_url&closeto=${lon},${lat}&limit=1`;
+      L.marker([lat, lon]).addTo(window.map)
+        .bindPopup(`<b>${address}</b>`).openPopup();
 
-        $.getJSON(mapillaryUrl, function(mapData){
-            if(mapData.data && mapData.data.length > 0){
-                const imgUrl = mapData.data[0].thumb_1024_url;
-                console.log("תמונת רחוב Mapillary:", imgUrl);
+      // Mapillary
+      const mapillaryUrl = `https://graph.mapillary.com/images?fields=id,thumb_1024_url&closeto=${lon},${lat}&limit=1`;
 
-                // הצגת תמונה בדף
-                $('#streetview-img').attr('src', imgUrl);
-            } else {
-                console.log("לא נמצאה תמונת רחוב עבור המיקום");
-                $('#streetview-img').attr('src','');
-            }
-        }).fail(function(){
-            console.log("שגיאה בבקשה ל-Mapillary");
+      $.getJSON(mapillaryUrl)
+        .done(function (mapData) {
+          if (mapData.data && mapData.data.length > 0) {
+            const imgUrl = mapData.data[0].thumb_1024_url;
+            $('#streetview-img').attr('src', imgUrl);
+          } else {
+            $('#streetview-img').attr('src', '');
+            alert("לא נמצאה תמונת רחוב במיקום זה.");
+          }
+        })
+        .fail(function () {
+          console.error("שגיאה בטעינת Mapillary");
         });
 
-    }).fail(function(){
-        alert("שגיאה בבקשה לשרת OpenStreetMap");
+    })
+    .fail(function () {
+      alert("שגיאה בבקשה לשרת OpenStreetMap");
     });
 });
->>>>>>> 385995c0ddf5f8509893edfe4383af474a9737c4
+$('#message').fadeIn(1000).delay(2000).fadeOut(1000);
+
+// דוגמת גלילה חלקה
+$('a[href^="#"]').on('click', function(event) {
+  event.preventDefault();
+  var target = this.hash;
+  $('html, body').animate({
+    scrollTop: $(target).offset().top
+  }, 600);
+});
+
+// דוגמת FadeIn ו-FadeOut
+$('#message').fadeIn(1000).delay(2000).fadeOut(1000);
+
+// דוגמת גלילה חלקה
+$('a[href^="#"]').on('click', function(event) {
+  event.preventDefault();
+  var target = this.hash;
+  $('html, body').animate({
+    scrollTop: $(target).offset().top
+  }, 600);
+});
