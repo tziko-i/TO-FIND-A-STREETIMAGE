@@ -2,7 +2,7 @@ window.onload = function () {
   const img = document.querySelector('.zoom-image');
 
   if (!img) {
-    console.log("תמונה לא נמצאה");
+    
     return;
   }
 
@@ -56,63 +56,77 @@ input.addEventListener('input', () => {
   input.classList.toggle('is-valid', trimmed !== '');
   input.classList.toggle('is-invalid', trimmed === '');
 });
+// משתנה גלובלי למפה
+let map = null;
+let marker = null;
 
-// שליחת טופס כתובת
-$('#address-form').on('submit', function (e) {
-  e.preventDefault();
-
-  const address = $('#username').val().trim();
-  if (!address) {
-    alert("אנא הכנס כתובת");
-    return;
-  }
-
-  const geoUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
-
-  $.getJSON(geoUrl)
-    .done(function (data) {
-      if (!data || data.length === 0) {
-        alert("לא נמצא מיקום עבור הכתובת");
-        return;
-      }
-
-      const lat = parseFloat(data[0].lat);
-      const lon = parseFloat(data[0].lon);
-
-      // מפת OSM
-      if (window.map) window.map.remove();
-      window.map = L.map('map').setView([lat, lon], 16);
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+// פונקציה ליצירת המפה בפעם הראשונה
+function initializeMap(lat, lon, address) {
+    map = L.map('map').setView([lat, lon], 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(window.map);
-
-      L.marker([lat, lon]).addTo(window.map)
+    }).addTo(map);
+    marker = L.marker([lat, lon]).addTo(map)
         .bindPopup(`<b>${address}</b>`).openPopup();
+}
 
-      // Mapillary
-      const mapillaryUrl = `https://graph.mapillary.com/images?fields=id,thumb_1024_url&closeto=${lon},${lat}&limit=1`;
+// פונקציה לעדכון מיקום המפה והמרקר בחיפושים הבאים
+function updateMap(lat, lon, address) {
+    map.setView([lat, lon], 16);
+    if (marker) {
+        marker.setLatLng([lat, lon]).bindPopup(`<b>${address}</b>`).openPopup();
+    }
+}
 
-      $.getJSON(mapillaryUrl)
-        .done(function (mapData) {
-          if (mapData.data && mapData.data.length > 0) {
-            const imgUrl = mapData.data[0].thumb_1024_url;
-            $('#streetview-img').attr('src', imgUrl);
-          } else {
-            $('#streetview-img').attr('src', '');
-            alert("לא נמצאה תמונת רחוב במיקום זה.");
-          }
-        })
-        .fail(function () {
-          console.error("שגיאה בטעינת Mapillary");
+$(document).ready(function() {
+    $('#address-form').on('submit', function(e){
+        e.preventDefault();
+        const address = $('#username').val().trim();
+        if (!address) {
+            alert("אנא הכנס כתובת");
+            return;
+        }
+
+        const geoUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`;
+        $.getJSON(geoUrl).done(function(data){
+            if (!data || data.length === 0) {
+                alert("לא נמצא מיקום עבור הכתובת");
+                return;
+            }
+
+            const lat = parseFloat(data[0].lat);
+            const lon = parseFloat(data[0].lon);
+
+            // בודק אם המפה כבר קיימת
+            if (!map) {
+                initializeMap(lat, lon, address);
+            } else {
+                updateMap(lat, lon, address);
+            }
+
+            const accessToken = "MLY|xxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+            const mapillaryUrl = `https://graph.mapillary.com/images?fields=id&closeto=${lon},${lat}&limit=1&access_token=${accessToken}`;
+
+            $.getJSON(mapillaryUrl).done(function(mapData){
+                const iframe = $('#streetview-iframe');
+                if (mapData.data && mapData.data.length > 0) {
+                    const imageKey = mapData.data[0].id;
+                    const iframeSrc = `https://www.mapillary.com/embed?image_key=${imageKey}`;
+                    iframe.attr('src', iframeSrc);
+                    iframe.show();
+                } else {
+                    iframe.hide();
+                    alert("לא נמצאה תמונת רחוב במיקום זה.");
+                }
+            }).fail(function(){
+                console.error("שגיאה בטעינת Mapillary");
+                $('#streetview-iframe').hide();
+            });
+        }).fail(function(){
+            alert("שגיאה בבקשה לשרת OpenStreetMap");
         });
-
-    })
-    .fail(function () {
-      alert("שגיאה בבקשה לשרת OpenStreetMap");
     });
 });
-$('#message').fadeIn(1000).delay(2000).fadeOut(1000);
 
 // דוגמת גלילה חלקה
 $('a[href^="#"]').on('click', function(event) {

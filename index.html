@@ -29,7 +29,7 @@
 <button id="toggle-spin" class="btn btn-primary">STOP PICTURE CYCLE</button>
   <!-- טופס חיפוש -->
   <div class="form-container">
-    <h2 class="mb-4 text-center">GET A PICTURE OF ANY STREET IN THE WORLD</h2>
+    <h2 class="mb-4 text-center">GET A SATTELIITE PICTURE OF ANY STREET IN THE WORLD</h2>
 
     <form id="address-form">
       <div class="custom-input mb-3">
@@ -42,6 +42,18 @@
     </form>
    
   </div>
+  
+        <div id="map" style="height: 400px; width: 100%; margin-top: 20px;"></div>
+
+        <iframe id="streetview-iframe"
+                src=""
+                height="480"
+                width="100%"
+                frameborder="0"
+                allowfullscreen
+                style="display: none; margin-top: 20px;">
+        </iframe>
+    </div>
     <!-- jQuery - שים כאן (בסוף ה-body, לפני הסקריפטים האחרים) -->
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
