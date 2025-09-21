@@ -1,147 +1,157 @@
 html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .sky-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: #87CEEB; /* שמיים */
-  overflow: hidden;
-  z-index: -1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #87CEEB;
+    overflow: hidden;
+    z-index: -1;
 }
 
 .cloud {
-  position: absolute;
-  background: #fff;
-  border-radius: 50%;
-  width: 100px;
-  height: 60px;
-  opacity: 0.9;
-  animation-name: moveClouds;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    width: 100px;
+    height: 60px;
+    opacity: 0.9;
+    animation-name: moveClouds;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
 }
 
 .cloud::before,
 .cloud::after {
-  content: '';
-  position: absolute;
-  background: #fff;
-  border-radius: 50%;
+    content: '';
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
 }
 
 .cloud::before {
-  width: 60px;
-  height: 60px;
-  left: -30px;
-  top: 0;
+    width: 60px;
+    height: 60px;
+    left: -30px;
+    top: 0;
 }
 
 .cloud::after {
-  width: 80px;
-  height: 80px;
-  left: 30px;
-  top: -20px;
+    width: 80px;
+    height: 80px;
+    left: 30px;
+    top: -20px;
 }
 
 @keyframes moveClouds {
-  0% {
-    left: 110%;
-  }
-  100% {
-    left: -200px;
-  }
+    0% { left: 110%; }
+    100% { left: -200px; }
 }
-
-
 
 /* תמונה מרכזית מסתובבת */
 .zoom-image {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  width: 500px;
-  height: auto;
-  transform: translate(-50%, -50%);
-  animation: spinCounterClockwise 60s linear infinite;
-   transition: transform 2s ease-in-out;
-  z-index: 0;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    width: 500px;
+    height: auto;
+    transform: translate(-50%, -50%);
+    animation: spinCounterClockwise 60s linear infinite;
+    transition: transform 2s ease-in-out;
+    z-index: 0;
 }
 @media (max-width: 768px) {
-  .zoom-image {
-    width: 100%;
-    top: 55%;
-  }
+    .zoom-image {
+        width: 100%;
+        top: 55%;
+    }
 }
 
 @keyframes spinCounterClockwise {
-  from {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(-360deg);
-  }
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(-360deg); }
 }
 
 /* עיצוב טופס */
 .form-container {
-  position: fixed;         /* כדי להצמיד לראש הדף */
-  top: 0;
-  left: 0;
-  width: 100vw;            /* רוחב מלא של המסך */
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 20px;
-  border-radius: 0 0 10px 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 .custom-input {
-  position: relative;
-  margin-top: 30px;
+    position: relative;
+    margin-top: 30px;
 }
 
 .custom-input input {
-  border: 2px solid #0d6efd;
-  border-radius: 8px;
-  padding: 12px 16px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
+    border: 2px solid #0d6efd;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
 }
 
 .custom-input input:focus {
-  box-shadow: 0 0 8px rgba(13, 110, 253, 0.5);
-  border-color: #0a58ca;
+    box-shadow: 0 0 8px rgba(13, 110, 253, 0.5);
+    border-color: #0a58ca;
 }
 
 .custom-input label {
-  position: absolute;
-  top: -10px;
-  right: 16px;
-  
-  padding: 0 5px;
-  font-size: 0.9rem;
-  color: #0d6efd;
+    position: absolute;
+    top: -10px;
+    right: 16px;
+    padding: 0 5px;
+    font-size: 0.9rem;
+    color: #0d6efd;
 }
 
 .custom-input .valid-feedback,
 .custom-input .invalid-feedback {
-  display: none;
-  font-size: 0.85rem;
+    display: none;
+    font-size: 0.85rem;
 }
 
 .custom-input input.is-valid ~ .valid-feedback {
-  display: block;
-  color: green;
+    display: block;
+    color: green;
 }
 
 .custom-input input.is-invalid ~ .invalid-feedback {
-  display: block;
-  color: red;
+    display: block;
+    color: red;
+}
+
+/* סגנון עבור תמונת הרחוב */
+#streetview-image {
+    display: none;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 5;
+}
+
+/* סגנון עבור מחוון טעינה */
+#loading {
+    display: none;
+    text-align: center;
+    margin-top: 20px;
 }
